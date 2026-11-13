@@ -9,7 +9,7 @@ Use this skill when a user wants an architecture, service topology, data-flow, o
 
 ## Workflow
 
-1. Extract a factual semantic graph before writing markup. Give every node a stable lowercase `id`, a `kind`, a short label, a one-line role, and optional evidence/detail copy. Give every directed edge stable `from`/`to` IDs and a concise label.
+1. Extract a factual semantic graph before writing markup. Give every node a stable lowercase `id`, a `kind`, a short label, a one-line role, and optional detail/evidence/status/link copy. Give every directed edge stable `from`/`to` IDs and a concise label.
 2. Copy `assets/starter.html` into the target document. Replace only the `GRAPH`, title, subtitle, legend copy, and local evidence links. Keep the interaction shell intact unless the user explicitly needs another behavior.
 3. Keep the file self-contained: inline CSS, inline JavaScript, and inline SVG. Do not add a CDN, font request, framework bundle, or runtime API. Keep private URLs, credentials, repository paths, and project-only facts in the local consumer rather than the public skill.
 4. Run `scripts/validate_diagram.py <file>` and open the file from `file://` or a static server. Exercise the smoke path: focus a node, search, trace a route, zoom/pan/reset, switch theme, press Escape, and reload a hash URL.

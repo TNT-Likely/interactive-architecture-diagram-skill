@@ -22,7 +22,7 @@ const GRAPH = {
 };
 ```
 
-Required node fields are `id`, `kind`, `label`, and `role`. Required edge fields are `from`, `to`, and `label`. IDs must be unique and edges must reference existing nodes. Optional `detail`, `evidence`, `status`, and `href` fields enrich the inspector without changing the graph.
+Required node fields are `id`, `kind`, `label`, and `role`. Required edge fields are `from`, `to`, and `label`. IDs must be unique and edges must reference existing nodes. Optional `detail`, `evidence`, `status`, `href`, and `linkLabel` fields enrich the inspector without changing the graph. The starter renders `status` as a state badge and accepts only `http:`, `https:`, or `file:` links for `href`.
 
 ## SVG hooks
 

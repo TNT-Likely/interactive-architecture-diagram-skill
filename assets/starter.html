@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Interactive architecture diagram</title>
 <style>
-:root { --bg:#0b1020; --panel:#121a2c; --panel2:#18233a; --line:#31415e; --text:#eef3ff; --muted:#9eacc7; --accent:#75a7ff; --focus:#ffd166; --danger:#ff8f8f; --shadow:0 14px 40px #0006; --frontend-color:#79a6ff; --backend-color:#64d6ac; --database-color:#f6bc67; --messagebus-color:#bf9bff; --external-color:#b8c5d8; --future-color:#e1a3d2; }
+:root { --bg:#0b1020; --panel:#121a2c; --panel2:#18233a; --line:#31415e; --text:#eef3ff; --muted:#9eacc7; --accent:#75a7ff; --focus:#ffd166; --danger:#ff8f8f; --shadow:0 14px 40px #0006; --frontend-color:#79a6ff; --backend-color:#64d6ac; --database-color:#f6bc67; --messagebus-color:#bf9bff; --cloud-color:#6ec5ff; --external-color:#b8c5d8; --security-color:#ff8f8f; --future-color:#e1a3d2; }
 html[data-theme="light"] { --bg:#f3f6fb; --panel:#fff; --panel2:#edf2fa; --line:#d0d8e7; --text:#182238; --muted:#5f6c85; --accent:#2563eb; --focus:#9a6500; --danger:#b42318; --shadow:0 14px 40px #1b2b4a1c; }
 * { box-sizing:border-box; }
 body { margin:0; min-height:100vh; background:radial-gradient(800px 480px at 15% -10%,#4278ff2a,transparent 65%),var(--bg); color:var(--text); font:14px/1.6 ui-sans-serif,system-ui,-apple-system,"PingFang SC",sans-serif; }
@@ -38,13 +38,17 @@ svg { width:100%; height:100%; display:block; }
 .node[data-kind="backend"] .shape { fill:#274f41; stroke:#64d6ac; }
 .node[data-kind="database"] .shape { fill:#59412a; stroke:#f6bc67; }
 .node[data-kind="messagebus"] .shape { fill:#43347a; stroke:#bf9bff; }
+.node[data-kind="cloud"] .shape { fill:#20465d; stroke:#6ec5ff; }
 .node[data-kind="external"] .shape { fill:#3a4352; stroke:#b8c5d8; }
+.node[data-kind="security"] .shape { fill:#5a3039; stroke:#ff8f8f; }
 .node[data-kind="future"] .shape { fill:#3d3441; stroke:#e1a3d2; stroke-dasharray:7 5; }
 html[data-theme="light"] .node[data-kind="frontend"] .shape { fill:#dbeafe; stroke:#1d4ed8; }
 html[data-theme="light"] .node[data-kind="backend"] .shape { fill:#dcfce7; stroke:#15803d; }
 html[data-theme="light"] .node[data-kind="database"] .shape { fill:#fef3c7; stroke:#b45309; }
 html[data-theme="light"] .node[data-kind="messagebus"] .shape { fill:#ede9fe; stroke:#6d28d9; }
+html[data-theme="light"] .node[data-kind="cloud"] .shape { fill:#e0f2fe; stroke:#0369a1; }
 html[data-theme="light"] .node[data-kind="external"] .shape { fill:#e2e8f0; stroke:#475569; }
+html[data-theme="light"] .node[data-kind="security"] .shape { fill:#fee2e2; stroke:#b91c1c; }
 html[data-theme="light"] .node[data-kind="future"] .shape { fill:#f5e8f2; stroke:#9d4edd; }
 .node:focus-visible .shape,.node[data-selected="true"] .shape { stroke:var(--focus); stroke-width:4; filter:drop-shadow(0 0 8px color-mix(in srgb,var(--focus) 55%,transparent)); }
 .node[data-muted="true"],.edge[data-muted="true"],.edge-label[data-muted="true"] { opacity:.16; }
@@ -57,6 +61,8 @@ html[data-theme="light"] .node[data-kind="future"] .shape { fill:#f5e8f2; stroke
 .detail-card h2 { margin:3px 0 8px; font-size:20px; }
 .detail-card p { color:var(--muted); margin:7px 0; }
 .detail-card a { color:var(--accent); }
+.detail-state { display:inline-flex; width:max-content; margin:0 0 4px; padding:2px 8px; border:1px solid var(--line); border-radius:999px; color:var(--text) !important; font-size:12px; }
+.detail-state[hidden],.detail-link[hidden] { display:none; }
 .empty { color:var(--muted); }
 .legend { display:flex; flex-wrap:wrap; gap:7px; margin-top:12px; }
 .legend button { background:transparent; border:1px solid var(--line); color:var(--muted); border-radius:999px; padding:4px 8px; cursor:pointer; }
@@ -68,6 +74,8 @@ html[data-theme="light"] .node[data-kind="future"] .shape { fill:#f5e8f2; stroke
 #overview .mini-node[data-kind="backend"] { fill:#64d6ac; }
 #overview .mini-node[data-kind="database"] { fill:#f6bc67; }
 #overview .mini-node[data-kind="messagebus"] { fill:#bf9bff; }
+#overview .mini-node[data-kind="cloud"] { fill:#6ec5ff; }
+#overview .mini-node[data-kind="security"] { fill:#ff8f8f; }
 #overview .mini-node[data-kind="future"] { fill:#e1a3d2; }
 .notice { margin-top:12px; color:var(--muted); font-size:12px; }
 .dialog-backdrop { position:fixed; inset:0; z-index:5; background:#0008; display:grid; place-items:start center; padding:12vh 16px; }
@@ -132,8 +140,10 @@ body.presentation .viewport { height:calc(100vh - 32px); min-height:0; }
         <div class="kicker">Node details</div>
         <h2 id="detail-title">No node selected</h2>
         <p id="detail-role" class="empty">Select a node to inspect its role and directly connected relationships.</p>
+        <p id="detail-state" class="detail-state" hidden></p>
         <p id="detail-copy"></p>
         <p id="detail-evidence"></p>
+        <p id="detail-link" class="detail-link" hidden><a id="detail-link-anchor" target="_blank" rel="noreferrer">Open source</a></p>
         <div class="legend" id="legend" aria-label="Filter by semantic kind"></div>
       </section>
       <section class="map-card">
@@ -176,7 +186,7 @@ const GRAPH = {
   ]
 };
 
-const KIND_LABELS = { frontend:"Frontend", backend:"Backend", database:"Database", messagebus:"Message bus", external:"External", future:"Future" };
+const KIND_LABELS = { frontend:"Frontend", backend:"Backend", database:"Database", messagebus:"Message bus", cloud:"Cloud", external:"External", security:"Security", future:"Future" };
 const svg = document.getElementById("diagram");
 const scene = document.getElementById("scene");
 const viewport = document.getElementById("viewport");
@@ -193,6 +203,13 @@ let drag = null;
 let toastTimer = null;
 
 function esc(value) { return String(value ?? ""); }
+function safeHref(value) {
+  if (!value) return null;
+  try {
+    const url = new URL(value, document.baseURI);
+    return ["http:","https:","file:"].includes(url.protocol) ? url.href : null;
+  } catch { return null; }
+}
 function showToast(message) { toast.textContent = message; toast.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => { toast.hidden = true; }, 2200); }
 function nodeSize(node) { return { width:Math.max(150, Math.min(220, 34 + esc(node.label).length * 8)), height:76 }; }
 function point(node) { const s = nodeSize(node); return { x:node.x ?? 100, y:node.y ?? 100, width:s.width, height:s.height, cx:(node.x ?? 100) + s.width / 2, cy:(node.y ?? 100) + s.height / 2 }; }
@@ -247,8 +264,22 @@ function setSelection(id, options={}) {
   const node = id ? byId[id] : null;
   document.getElementById("detail-title").textContent = node ? node.label : "No node selected";
   document.getElementById("detail-role").textContent = node ? node.role : "Select a node to inspect its role and directly connected relationships.";
+  const state = document.getElementById("detail-state");
+  state.textContent = node?.status || "";
+  state.hidden = !node?.status;
   document.getElementById("detail-copy").textContent = node?.detail || "";
   document.getElementById("detail-evidence").textContent = node?.evidence ? `Evidence: ${node.evidence}` : "";
+  const link = document.getElementById("detail-link");
+  const anchor = document.getElementById("detail-link-anchor");
+  const href = safeHref(node?.href);
+  if (href) {
+    anchor.href = href;
+    anchor.textContent = node.linkLabel || "Open source";
+    link.hidden = false;
+  } else {
+    anchor.removeAttribute("href");
+    link.hidden = true;
+  }
   status.textContent = node ? `${node.label}` : "Click a node to inspect it.";
   if (node && !options.skipHash) history.replaceState(null, "", `#node=${encodeURIComponent(id)}`);
   if (node && !options.skipFocus) nodeEls.get(id)?.focus({preventScroll:true});

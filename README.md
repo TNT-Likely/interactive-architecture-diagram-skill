@@ -9,10 +9,10 @@ The interaction shell supports node search and inspection, directed route tracin
 Copy the skill directory into a Codex skills directory, then invoke it for an architecture or service-topology diagram:
 
 ```sh
-cp -R /path/to/interactive-architecture-diagram-skill "$CODEX_HOME/skills/interactive-architecture-diagram"
+cp -R /path/to/interactive-architecture-diagram-skill "${CODEX_HOME:-$HOME/.codex}/skills/interactive-architecture-diagram"
 ```
 
-If `CODEX_HOME` is unset, use the local agent skills directory for your environment. The skill can also be loaded directly from this repository while editing.
+The default Codex directory is `~/.codex/skills`. If you use an agent manager that stores skills under `~/.agents/skills` (for example, a Claude Code setup), install or copy the same directory there separately. The skill can also be loaded directly from this repository while editing.
 
 ## Build a diagram
 
