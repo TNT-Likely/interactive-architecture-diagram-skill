@@ -1,0 +1,8 @@
+interface:
+  display_name: "Interactive Architecture Diagram"
+  short_description: "Build interactive, inspectable architecture diagrams"
+  brand_color: "#2563EB"
+  default_prompt: "Use $interactive-architecture-diagram to turn this system design into an inspectable interactive architecture diagram."
+
+policy:
+  allow_implicit_invocation: true
